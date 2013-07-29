@@ -59,7 +59,7 @@ touch "$sshauthkeys"
 chown "$user":"$user" "$sshauthkeys"
 
 # *.rc configuration
-cp ./configs/* ~/
+cp -r ./rc/. ~/
 
 # restart services
 service ssh restart
