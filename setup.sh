@@ -1,13 +1,33 @@
 #!/bin/bash
 
+if [ $(whoami) != root ]; then
+    echo Please run this script using sudo
+    exit
+fi
+
+bindir="$(dirname "$(readlink -fn "$0")")"
+cd "$bindir"
+
 source ./settings.conf
 
+# use this script on a freshly deployed vps.
+#   * run as a newly created administrative user with a home directory.
+#   * run with root permissions but don't run as root.
+#   * installs commonly used programs
+#   * loads grimtech customized *.rc files,
+#   * sets up basic ssh security settings
+
+##########################################
+#                                        #
+#                WARNING                 #
+#                                        #
+##########################################
+
+# this script locks root user out of ssh and disables clear text passwords.
+
+
 # install commonly used programs
-apt-get -y install screen emacs
-
-# create administrative user, a home dir for that user, and set their shell.
-useradd "$user" -m -s "$shell"
-
+sudo apt-get install emacs screen
 
 # set up ssh
 # create a string of allowed ssh users
@@ -31,11 +51,11 @@ fi
 # disallow root login via ssh
 sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' "$sshconf"
 
-# create an ssh key
-ssh-keygen -f ~/.ssh/id_rsa -P '' -t rsa
+# disable clear text passwords
+sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/g' "$sshconf"
 
 # *.rc configuration
+cp ./configs/* ~/
 
-
-# message to admin
-echo -e "#\n#\n#  Please su to $user and then use passwd to set a user password. Also add an allowed host to /home/$user/.ssh/Allowed_Host\n#\n#"
+# restart services
+service ssh restart
