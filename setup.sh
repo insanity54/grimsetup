@@ -71,7 +71,7 @@ cp -r ./rc/. ~/
 
 # LAMP stack
 apt-get -y install apache2 mysql-server php5 libapache2-mod-php5 php5-xsl php5-gd php-pear libapache2-mod-auth-mysql php5-mysql php5-suhosin
-sed -i 's/; extension=mysql.so/extension=mysql\.so/g' /etc/php5/apache2/php.ini
+# sed -i 's/; extension=mysql.so/extension=mysql\.so/g' /etc/php5/apache2/php.ini # dunno if we need this
 
 # Apache Config
 echo 'ServerName localhost' >> /etc/apache2/apache2.conf
@@ -84,9 +84,10 @@ sed -i "s/webmaster@localhost/$webmaster/g" /etc/apache2/sites-available/"$siten
 sed -i "/DocumentRoot/ i\ \tServerName $servername" /etc/apache2/sites-available/"$sitename"
 sed -i "/DocumentRoot/ i\ \tServerAlias $serveralias" /etc/apache2/sites-available/"$sitename"
 
-# restart services
-service apache2 restart
-service ssh restart
+# MySQL
+#mysql_install_db  # I don't think we need to run this
+echo -e "[mysqld]\nlog-error = /var/log/mysql/mysql.err" > /etc/mysql/conf.d/grimtech.cnf
+mysql_secure_installation
 
 # Wordpress
 cd /tmp
@@ -94,4 +95,8 @@ wget http://wordpress.org/latest.tar.gz
 tar xvf latest.tar.gz
 mkdir /srv/"$sitename"
 mv wordpress /srv/"$sitename"/
+
+# restart services
+service apache2 restart
+service ssh restart
 
