@@ -72,10 +72,17 @@ cp -r ./rc/. ~/
 # LAMP stack
 apt-get -y install apache2 mysql-server php5 libapache2-mod-php5 php5-xsl php5-gd php-pear libapache2-mod-auth-mysql php5-mysql php5-suhosin
 sed -i 's/; extension=mysql.so/extension=mysql\.so/g' /etc/php5/apache2/php.ini
+
+# Apache Config
 echo 'ServerName localhost' >> /etc/apache2/apache2.conf
-echo 'log-error = /var/log/mysql/mysql.err' > "/etc/mysql/conf.d/$user.cnf"
 mkdir /srv
 chown www-data:www-data /srv
+cp /etc/apache2/sites-available/{default, "$sitename"}
+ln -s /etc/apache2/sites-available/"$sitename" /etc/apache2/sites-enabled/015-"$sitename"
+sed -i "s|/var/www|/srv/$sitename/wordpress|g" /etc/apache2/sites-available/"$sitename"
+sed -i "s/webmaster@localhost/$webmaster/g" /etc/apache2/sites-available/"$sitename"
+sed -i "/DocumentRoot/ i\ \tServerName $servername" /etc/apache2/sites-available/"$sitename"
+sed -i "/DocumentRoot/ i\ \tServerAlias $serveralias" /etc/apache2/sites-available/"$sitename"
 
 # restart services
 service apache2 restart
@@ -84,3 +91,7 @@ service ssh restart
 # Wordpress
 cd /tmp
 wget http://wordpress.org/latest.tar.gz
+tar xvf latest.tar.gz
+mkdir /srv/"$sitename"
+mv wordpress /srv/"$sitename"/
+
