@@ -27,7 +27,7 @@ source ./settings.conf
 
 
 # install commonly used programs
-sudo apt-get install emacs screen
+apt-get -y install emacs screen
 
 # set up ssh
 # create a string of allowed ssh users
@@ -53,6 +53,10 @@ sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' "$sshconf"
 
 # disable clear text passwords
 sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/g' "$sshconf"
+
+# create authorized_keys file
+touch "$sshauthkeys"
+chown "$user":"$user" "$sshauthkeys"
 
 # *.rc configuration
 cp ./configs/* ~/
