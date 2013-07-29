@@ -61,5 +61,16 @@ chown "$user":"$user" "$sshauthkeys"
 # *.rc configuration
 cp -r ./rc/. ~/
 
+
+
+
+# LAMP stack
+apt-get -y install apache2 mysql-server php5 libapache2-mod-php5 php5-xsl php5-gd php-pear libapache2-mod-auth-mysql php5-mysql php5-suhosin
+sed -i ‘s/; extension=mysql.so/extension=mysql\.so/g' /etc/php5/apache2/php.ini
+mkdir /srv/www
+chown www-data:www-data /srv/www
+
 # restart services
+service apache2 restart
 service ssh restart
+
