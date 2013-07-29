@@ -81,3 +81,6 @@ chown www-data:www-data /srv
 service apache2 restart
 service ssh restart
 
+# Wordpress
+cd /tmp
+wget http://wordpress.org/latest.tar.gz
