@@ -27,7 +27,12 @@ source ./settings.conf
 
 
 # install commonly used programs
+sudo apt-get update
 apt-get -y install emacs screen
+
+# make tmp dir in home dir
+mkdir ~/tmp
+chown "$user":"$user" ~/tmp
 
 # set up ssh
 # create a string of allowed ssh users
@@ -66,9 +71,11 @@ cp -r ./rc/. ~/
 
 # LAMP stack
 apt-get -y install apache2 mysql-server php5 libapache2-mod-php5 php5-xsl php5-gd php-pear libapache2-mod-auth-mysql php5-mysql php5-suhosin
-sed -i ‘s/; extension=mysql.so/extension=mysql\.so/g' /etc/php5/apache2/php.ini
-mkdir /srv/www
-chown www-data:www-data /srv/www
+sed -i 's/; extension=mysql.so/extension=mysql\.so/g' /etc/php5/apache2/php.ini
+echo 'ServerName localhost' >> /etc/apache2/apache2.conf
+echo 'log-error = /var/log/mysql/mysql.err' > "/etc/mysql/conf.d/$user.cnf"
+mkdir /srv
+chown www-data:www-data /srv
 
 # restart services
 service apache2 restart
