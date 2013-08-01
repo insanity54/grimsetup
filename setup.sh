@@ -28,7 +28,7 @@ source ./settings.conf
 
 # install commonly used programs
 sudo apt-get update
-apt-get -y install emacs screen
+apt-get -y install emacs screen unzip
 
 # make tmp dir in home dir
 mkdir ~/tmp
@@ -76,7 +76,6 @@ apt-get -y install apache2 mysql-server php5 libapache2-mod-php5 php5-xsl php5-g
 # Apache Config
 echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 mkdir /srv
-chown www-data:www-data /srv
 cp /etc/apache2/sites-available/{default, "$sitename"}
 ln -s /etc/apache2/sites-available/"$sitename" /etc/apache2/sites-enabled/015-"$sitename"
 sed -i "s|/var/www|/srv/$sitename/wordpress|g" /etc/apache2/sites-available/"$sitename"
@@ -95,6 +94,7 @@ wget http://wordpress.org/latest.tar.gz
 tar xvf latest.tar.gz
 mkdir /srv/"$sitename"
 mv wordpress /srv/"$sitename"/
+chown -R www-data:www-data /srv
 
 # restart services
 service apache2 restart
