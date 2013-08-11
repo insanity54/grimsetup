@@ -65,9 +65,12 @@ chown "$user":"$user" "$sshauthkeys"
 
 # *.rc configuration
 cp -r ./rc/. ~/
+cp -r ./rc/. /root/
+chown -R "$user":"$user" ~/rc
 
 # .gitignore
 cp ./gitconf/.gitignore_global ~/
+chown "$user":"$user" ./gitconf/.gitignore_global
 
 
 # LAMP stack
